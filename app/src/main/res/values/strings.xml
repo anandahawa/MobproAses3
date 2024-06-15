@@ -1,21 +1,20 @@
 <resources>
-    <string name="app_name">PictureThis</string>
+    <string name="app_name">FlowerFairy</string>
     <string name="gambar">Gambar %1s</string>
-    <string name="error">Gagal memuat data... Koneksi error.</string>
+    <string name="error">Belum ada data. Ayo masuk dan tambahkan bunga!</string>
     <string name="try_again">Coba lagi</string>
     <string name="profil">Profil</string>
     <string name="tutup">Tutup</string>
     <string name="logout">Logout</string>
-    <string name="tambah_hewan">Tambah hewan</string>
+    <string name="tambah_bunga">Tambah bunga</string>
     <string name="nama">Nama</string>
     <string name="harga">Harga</string>
-    <string name="nama_latin">Nama latin</string>
     <string name="batal">Batal</string>
     <string name="simpan">Simpan</string>
     <string name="konfirmasi_hapus">Apakah anda yakin ingin menghapus?</string>
     <string name="hapus">Hapus</string>
-    <string name="makna">"PictureThis” adalah aplikasi yang bisa kamu gunakan untuk menambahkan data hewan-hewan lho! Dengan cukup memasukkan foto, nama, dan juga nama latin dari hewannya, kamu bisa mendata berbagi macam hewan dan menyimpannya sebagai kamus hewanmu. Ayo dicoba!
-        \n\nAplikasi ini dibuat untuk kelas Assessment 3 Mobpro 1.
+    <string name="makna">”FlowerFairy” adalah aplikasi yang bisa digunakan oleh admin dari toko bunga untuk menambahkan data bunga beserta harganya. Dengan cukup memasukkan foto, nama, dan juga harga dari bunga, admin bisa mendata berbagi macam bunga yang dijualnya dan menyimpannya sebagai daftar bunga.
+        \n\nAplikasi ini dibuat untuk Assessment 3 mata kuliah Mobpro 1.
         \n\nCopyright © 2024 Ananda Hawa Oktavia.
         \nAll rights reserved     "</string>
     <string name="tentang_aplikasi">Tentang aplikasi</string>

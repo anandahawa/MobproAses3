@@ -5,8 +5,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.assessment3.model.Hewan
-import com.example.assessment3.ui.screen.AboutAnimal
 import com.example.assessment3.ui.screen.AboutScreen
 import com.example.assessment3.ui.screen.MainScreen
 

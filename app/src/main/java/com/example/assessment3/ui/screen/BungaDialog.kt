@@ -33,13 +33,13 @@ import com.example.assessment3.R
 import com.example.assessment3.ui.theme.Assessment3Theme
 
 @Composable
-fun HewanDialog(
+fun BungaDialog(
     bitmap: Bitmap?,
     onDismissRequest: () -> Unit,
     onConfirmation: (String, String) -> Unit
 ) {
     var nama by remember { mutableStateOf("") }
-    var namaLatin by remember { mutableStateOf("") }
+    var harga by remember { mutableStateOf("") }
 
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card (
@@ -69,9 +69,9 @@ fun HewanDialog(
                     modifier = Modifier.padding(top = 8.dp)
                 )
                 OutlinedTextField(
-                    value = namaLatin,
-                    onValueChange = { namaLatin = it },
-                    label = { Text(text = stringResource(id = R.string.nama_latin)) },
+                    value = harga,
+                    onValueChange = { harga = it },
+                    label = { Text(text = stringResource(id = R.string.harga)) },
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Sentences,
@@ -92,8 +92,8 @@ fun HewanDialog(
                         Text(text = stringResource(R.string.batal))
                     }
                     OutlinedButton(
-                        onClick = { onConfirmation(nama, namaLatin) },
-                        enabled = nama.isNotEmpty() && namaLatin.isNotEmpty(),
+                        onClick = { onConfirmation(nama, harga) },
+                        enabled = nama.isNotEmpty() && harga.isNotEmpty(),
                         modifier = Modifier.padding(8.dp)
                     ) {
                         Text(text = stringResource(R.string.simpan))
@@ -109,7 +109,7 @@ fun HewanDialog(
 @Composable
 fun AddDialogPreview() {
     Assessment3Theme {
-        HewanDialog(
+        BungaDialog(
             bitmap = null,
             onDismissRequest = {},
             onConfirmation = { _, _ -> }

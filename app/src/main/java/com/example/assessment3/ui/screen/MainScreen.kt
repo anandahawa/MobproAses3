@@ -54,6 +54,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,11 +82,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.example.assessment3.R
-import com.example.assessment3.model.Hewan
+import com.example.assessment3.model.Bunga
 import com.example.assessment3.model.User
 import com.example.assessment3.navigation.Screen
 import com.example.assessment3.network.ApiStatus
-import com.example.assessment3.network.HewanApi
+import com.example.assessment3.network.BungaApi
 import com.example.assessment3.network.UserDataStore
 import com.example.assessment3.ui.theme.Assessment3Theme
 
@@ -100,14 +101,14 @@ fun MainScreen(navController: NavHostController) {
     val errorMessage by viewModel.errorMessage
 
     var showDialog by remember { mutableStateOf(false) }
-    var showHewanDialog by remember { mutableStateOf(false) }
+    var showBungaDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var currentHewanId by remember { mutableStateOf("") }
+    var currentBungaId by remember { mutableStateOf("") }
 
     var bitmap: Bitmap? by remember { mutableStateOf(null) }
     val launcher = rememberLauncherForActivityResult(CropImageContract()) {
         bitmap = getCroppedImage(context.contentResolver, it)
-        if (bitmap != null) showHewanDialog = true
+        if (bitmap != null) showBungaDialog = true
     }
 
     Scaffold(
@@ -161,7 +162,7 @@ fun MainScreen(navController: NavHostController) {
                 }) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(id = R.string.tambah_hewan)
+                        contentDescription = stringResource(id = R.string.tambah_bunga)
                     )
                 }
             }
@@ -171,11 +172,10 @@ fun MainScreen(navController: NavHostController) {
             viewModel = viewModel,
             userId = user.email,
             modifier = Modifier.padding(padding),
-            navController,
             onDeleteRequest = { id ->
                 showDeleteDialog = true
-                currentHewanId = id
-                Log.d("MainScreen", "Current Hewan ID: $currentHewanId")
+                currentBungaId = id
+                Log.d("MainScreen", "Current Bunga ID: $currentBungaId")
             },
             isUserLoggedIn = user.email.isNotEmpty()
         )
@@ -188,12 +188,12 @@ fun MainScreen(navController: NavHostController) {
                 showDialog = false
             }
         }
-        if (showHewanDialog) {
-            HewanDialog(
+        if (showBungaDialog) {
+            BungaDialog(
                 bitmap = bitmap,
-                onDismissRequest = { showHewanDialog = false }) { nama, namaLatin ->
-                viewModel.saveData(user.email, nama, namaLatin, bitmap!!)
-                showHewanDialog = false
+                onDismissRequest = { showBungaDialog = false }) { nama, harga ->
+                viewModel.saveData(user.email, nama, harga, bitmap!!)
+                showBungaDialog = false
             }
         }
 
@@ -206,8 +206,8 @@ fun MainScreen(navController: NavHostController) {
             DeleteConfirmationDialog(
                 onDismissRequest = { showDeleteDialog = false },
                 onConfirm = {
-                    Log.d("MainScreen", "Deleting Hewan ID: $currentHewanId")
-                    viewModel.deleteData(user.email, currentHewanId)
+                    Log.d("MainScreen", "Deleting Bunga ID: $currentBungaId")
+                    viewModel.deleteData(user.email, currentBungaId)
                     showDeleteDialog = false
                 }
             )
@@ -220,7 +220,6 @@ fun ScreenContent(
     viewModel: MainViewModel,
     userId: String,
     modifier: Modifier,
-    navController: NavHostController,
     onDeleteRequest: (String) -> Unit,
     isUserLoggedIn: Boolean
 ) {
@@ -249,12 +248,11 @@ fun ScreenContent(
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(bottom = 80.dp)
             ) {
-                items(data) { hewan ->
+                items(data) { bunga ->
                     ListItem(
-                        hewan = hewan,
+                        bunga = bunga,
                         onDeleteRequest = onDeleteRequest,
-                        isUserLoggedIn = isUserLoggedIn,
-                        navController
+                        isUserLoggedIn = isUserLoggedIn
                     )
                 }
             }
@@ -266,7 +264,10 @@ fun ScreenContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(id = R.string.error))
+                Text(
+                    text = stringResource(id = R.string.error),
+                    textAlign = TextAlign.Center
+                )
                 Button(
                     onClick = { viewModel.retrieveData(userId) },
                     modifier = Modifier.padding(top = 16.dp),
@@ -281,10 +282,9 @@ fun ScreenContent(
 
 @Composable
 fun ListItem(
-    hewan: Hewan,
+    bunga: Bunga,
     onDeleteRequest: (String) -> Unit,
-    isUserLoggedIn: Boolean,
-    navController: NavHostController) {
+    isUserLoggedIn: Boolean) {
     Box(
         modifier = Modifier
             .padding(4.dp)
@@ -293,10 +293,10 @@ fun ListItem(
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(HewanApi.getHewanUrl(hewan.imageId))
+                .data(BungaApi.getBungaUrl(bunga.image))
                 .crossfade(true)
                 .build(),
-            contentDescription = stringResource(R.string.gambar, hewan.nama),
+            contentDescription = stringResource(R.string.gambar, bunga.nama),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(id = R.drawable.loading_img),
             error = painterResource(id = R.drawable.broken_img),
@@ -313,24 +313,24 @@ fun ListItem(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = hewan.nama,
+                    text = bunga.nama,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
                 Text(
-                    text = hewan.namaLatin,
+                    text = bunga.harga,
                     fontStyle = FontStyle.Italic,
                     fontSize = 14.sp,
                     color = Color.White
                 )
             }
-            if (isUserLoggedIn && hewan.mine == 1) {
+            if (isUserLoggedIn) {
                 IconButton(
                     onClick = {
-                        if (hewan.id.isNotEmpty()) {
-                            onDeleteRequest(hewan.id)
+                        if (bunga.id.isNotEmpty()) {
+                            onDeleteRequest(bunga.id)
                         } else {
-                            Log.d("ListItem", "Invalid hewan ID")
+                            Log.d("ListItem", "Invalid bunga ID")
                         }
                     },
                     modifier = Modifier.align(Alignment.CenterVertically)

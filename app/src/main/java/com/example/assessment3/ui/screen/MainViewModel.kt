@@ -11,14 +11,14 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import com.example.assessment3.model.Hewan
+import com.example.assessment3.model.Bunga
 import com.example.assessment3.network.ApiStatus
-import com.example.assessment3.network.HewanApi
+import com.example.assessment3.network.BungaApi
 import java.io.ByteArrayOutputStream
 
 class MainViewModel : ViewModel() {
 
-    var data = mutableStateOf(emptyList<Hewan>())
+    var data = mutableStateOf(emptyList<Bunga>())
         private set
 
     var status = MutableStateFlow(ApiStatus.LOADING)
@@ -31,7 +31,7 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             status.value = ApiStatus.LOADING
             try {
-                data.value = HewanApi.service.getHewan(userId)
+                data.value = BungaApi.service.getBunga(userId)
                 status.value = ApiStatus.SUCCESS
             } catch (e: Exception) {
                 Log.d("MainViewModel", "Failure: ${e.message}")
@@ -40,13 +40,13 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun saveData(userId: String, nama: String, namaLatin: String, bitmap: Bitmap) {
+    fun saveData(userId: String, nama: String, harga: String, bitmap: Bitmap) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = HewanApi.service.postHewan(
+                val result = BungaApi.service.postBunga(
                     userId,
                     nama.toRequestBody("text/plain".toMediaTypeOrNull()),
-                    namaLatin.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    harga.toRequestBody("text/plain".toMediaTypeOrNull()),
                     bitmap.toMultipartBody()
                 )
 
@@ -61,11 +61,11 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun deleteData(userId: String, hewanId: String) {
+    fun deleteData(userId: String, bungaId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                Log.d("MainViewModel", "Attempting to delete hewan with ID: $hewanId using user ID: $userId")
-                val result = HewanApi.service.deleteHewan(userId, hewanId)
+                Log.d("MainViewModel", "Attempting to delete bunga with ID: $bungaId using user ID: $userId")
+                val result = BungaApi.service.deleteBunga(userId, bungaId)
                 Log.d("MainViewModel", "API Response: status=${result.status}, message=${result.message}")
                 if (result.status == "success") {
                     retrieveData(userId)
